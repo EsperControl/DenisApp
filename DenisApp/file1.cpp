@@ -6,7 +6,7 @@
 #include <fstream>
 #include <filesystem>
 #include <string>
-
+#define _CRT_SECURE_NO_WARNINGS
 BookStore Data[MAX_SIZE] =
 {
 { "Донцова","Проходняк","10А",100,10 },
@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
 		switch (cmd) //вызов функции для соответствующей команды
 		{
 			case CMD_MONITOR:MonitorFiles();
-			case CMD_SHOW: ShowData(Data, Count); break;
+			case CMD_SHOW: ShowData(&Data, &Count); break;
 			case CMD_READ: ReadDatabase(Data, Count); break;
 		}
 	}
