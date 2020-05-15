@@ -2,28 +2,34 @@
 #include <iostream> // header in standard library
 #include <stdio.h>
 #define _CRT_SECURE_NO_WARNINGS
+void ShowData(BookStore *data, unsigned &count);
 
 eCMD MenuShow()
 {
 	while (true)
 	{
-		puts("\n???????? ???????? : ");
-		puts(" 1 - ?????????????"); //??????????? ????
+		puts("\nВыберите  : ");
+		puts(" 1 - Редактировать запись"); //??????????? ????
 		puts(" 2 - Добавить запись"); //??????????? ????
+		puts(" 3 - Удалить запись");
+		puts(" 6 - Назад"); //??????????? ????
 		unsigned opt;
 		fflush(stdin); //????????? ???????? ??????
 		scanf_s("%u" , &opt);
 		switch (opt) { //??????? ?? ??????? ???????
 			case 1: return CMD_EDIT;
 			case 2: return CMD_ADD;
+			case 3: return CMD_DELETE;
 			case 6: return CMD_EXIT;
 			default: puts("?? ????? ???????????? ??????? ");
 				system("pause");
 		}
 	}
 }
+
 void EditRecord(BookStore *data, unsigned count)
 {
+	std::cout << "Global data address" << data << "\n";
 	puts("\n???????? ??????,??????? ?????? ????????: ");
 	unsigned opt;
 	while (true) {
@@ -71,13 +77,16 @@ void EditRecord(BookStore *data, unsigned count)
 	//ShowData(data, count);
 
 }
+
 void AddRecord(BookStore *data, unsigned *count)
 {
+	std::cout << "Global data address" << data << "\n";
+	std::cout << "Global count address" << count << "\n";
+	std::cout << "Global count value" << *count << "\n";
 	if (*count < MAX_SIZE) {
 		unsigned opt = *count;
-		count += 1;
-		/*BookStore dummy = ;
-		data[opt] = dummy;*/
+		std::cout << "opt value" << opt << "\n";
+		*count += 1;
 		puts("Введите значение 1");
 		fflush(stdin); //????????? ???????? ??????
 		scanf("%s", &data[opt].author);
@@ -106,6 +115,9 @@ void AddRecord(BookStore *data, unsigned *count)
 			data[opt].code,
 			data[opt].price,
 			data[opt].count);
+		std::cout << "Global data address" << data << "\n";
+		std::cout << "Global count address" << &count << "\n";
+		std::cout << "Global count value" << count << "\n";
 		system("pause");
 	}
 	else {
@@ -113,15 +125,37 @@ void AddRecord(BookStore *data, unsigned *count)
 		
 	}
 }
-void DeleteRecord(BookStore *data, unsigned &count) {
 
+void DeleteRecord(BookStore *data, unsigned *count) {
+	std::cout << "Global data address" << data << "\n";
+	std::cout << "Global count address" << count << "\n";
+	std::cout << "Global count value" << *count << "\n";
+	printf("Какую запись Вы хотите удалить? ");
+	unsigned opt;
+	fflush(stdin); 
+	scanf("%u", &opt);
+	if (*count > opt) {
+		for (unsigned i = opt; i < *count; i++)
+		{
+			data[i] = data[i + 1];
+		}
+		*count -= 1;
+	}
+	else {
+		puts("Неверно введен номер записи для удаления!");
+	}
 }
-void ShowData(BookStore &data, unsigned &count) 
+
+void ShowData(BookStore *data, unsigned &count) 
 {
+
 	eCMD cmd = CMD_NONE;
 	while (cmd != CMD_EXIT)
 	{
 		system("cls");
+		std::cout << "Global data address" << data << "\n";
+		std::cout << "Global count address" << &count << "\n";
+		std::cout << "Global count value" << count << "\n";
 		printf("___________________________________________________________________\n");
 		printf("|id|%16s|%16s|%16s|     ???.|     ??.|\n",
 			"?????",
@@ -145,7 +179,9 @@ void ShowData(BookStore &data, unsigned &count)
 			break;
 		case CMD_ADD:
 			AddRecord(data, &count);
-			cmd = CMD_EXIT;
+			break;
+		case CMD_DELETE:
+			DeleteRecord(data, &count);
 			break;
 		}
 	}

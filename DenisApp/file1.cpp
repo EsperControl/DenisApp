@@ -10,7 +10,7 @@
 BookStore Data[MAX_SIZE] =
 {
 { "Донцова","Проходняк","10А",100,10 },
-{ "Донцова2","Проходняк3","11А",101,11 },
+{ "Донцова2","Проходняк2","11А",101,11 },
 { "Донцова3","Проходняк3","12А",102,12 },
 };
 
@@ -23,10 +23,14 @@ eCMD Menu()
 	while (true)
 	{
 		system("cls"); //очистка экрана
+		std::cout << "Global data address" << &Data << "\n";
+		std::cout << "Global count address" << &Count << "\n";
+		std::cout << "Global count value" << Count << "\n";
 		puts("Выберите действие : "); //отображение меню
 		puts("0 - Просмотр файлов ");
 		puts("1 - Открыть файл ");
 		puts("2 - Просмотр данных");
+		puts("3 - Сохранить файл");
 		puts("4 - Выход из программы");
 		unsigned opt;
 		fflush(stdin); //обнуление входного потока
@@ -36,6 +40,7 @@ eCMD Menu()
 			case 0: return CMD_MONITOR;
 			case 1: return CMD_READ;
 			case 2: return CMD_SHOW;
+			case 3: return CMD_SAVE;
 			case 4: return CMD_EXIT;
 			default: puts("Вы ввели неправильную команду");
 				system("pause");
@@ -45,6 +50,7 @@ eCMD Menu()
 }
 int main(int argc, char* argv[])
 {
+
 	system("chcp 1251");
 	eCMD cmd = CMD_NONE;
 	while (true) //цикл для обработки команд основного меню
@@ -54,8 +60,9 @@ int main(int argc, char* argv[])
 		switch (cmd) //вызов функции для соответствующей команды
 		{
 			case CMD_MONITOR:MonitorFiles();
-			case CMD_SHOW: ShowData(&Data, &Count); break;
-			case CMD_READ: ReadDatabase(Data, Count); break;
+			case CMD_SHOW: ShowData(Data, Count); break;
+			case CMD_READ: CRead(Data, Count); break;
+			case CMD_SAVE: CSave(Data, Count); break;
 		}
 	}
 	puts("Работа закончена");
