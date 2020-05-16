@@ -13,10 +13,9 @@ BookStore Data[MAX_SIZE] =
 { "Донцова2","Проходняк2","11А",101,11 },
 { "Донцова3","Проходняк3","12А",102,12 },
 };
-
+char FileName[20] = "SuperDataBin.bin";
 unsigned Count = 3;
-//BookStore *dataPointer;
-//dataPointer = &Data;
+
 eCMD Menu()
 {
 	//цикл для вывода меню, если ввели неправильно команду
@@ -27,7 +26,6 @@ eCMD Menu()
 		std::cout << "Global count address" << &Count << "\n";
 		std::cout << "Global count value" << Count << "\n";
 		puts("Выберите действие : "); //отображение меню
-		puts("0 - Просмотр файлов ");
 		puts("1 - Открыть файл ");
 		puts("2 - Просмотр данных");
 		puts("3 - Сохранить файл");
@@ -37,17 +35,19 @@ eCMD Menu()
 		scanf_s("%u" , &opt);
 		switch (opt) 
 		{ //возврат из функции команды
-			case 0: return CMD_MONITOR;
-			case 1: return CMD_READ;
-			case 2: return CMD_SHOW;
-			case 3: return CMD_SAVE;
-			case 4: return CMD_EXIT;
+		case 1: return CMD_READ; break;
+			case 2: return CMD_SHOW; break;
+			case 3: return CMD_SAVE; break;
+			case 4: return CMD_EXIT; break;
 			default: puts("Вы ввели неправильную команду");
 				system("pause");
+
 
 		}
 	}
 }
+
+
 int main(int argc, char* argv[])
 {
 
@@ -59,10 +59,9 @@ int main(int argc, char* argv[])
 		cmd = Menu(); //отображение меню и ввод команд
 		switch (cmd) //вызов функции для соответствующей команды
 		{
-			case CMD_MONITOR:MonitorFiles();
 			case CMD_SHOW: ShowData(Data, Count); break;
-			case CMD_READ: CRead(Data, Count); break;
-			case CMD_SAVE: CSave(Data, Count); break;
+			case CMD_READ: CRead(Data, Count,FileName); break;
+			case CMD_SAVE: CSave(Data, Count, FileName); break;
 		}
 	}
 	puts("Работа закончена");

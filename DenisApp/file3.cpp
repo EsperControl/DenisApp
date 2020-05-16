@@ -1,8 +1,13 @@
-#include "file1.h" //???????? ?????????? ? TRec*
+#include "file1.h" 
 #include <iostream> // header in standard library
 #include <stdio.h>
+#include <string> 
 #define _CRT_SECURE_NO_WARNINGS
-void ShowData(BookStore *data, unsigned &count);
+void AveragePrice(BookStore* data, unsigned count);
+void SortCount(BookStore* data, unsigned count);
+void SortAuthor(BookStore* data, unsigned count);
+void Find(BookStore* data, unsigned count);
+
 
 eCMD MenuShow()
 {
@@ -12,7 +17,11 @@ eCMD MenuShow()
 		puts(" 1 - Редактировать запись"); //??????????? ????
 		puts(" 2 - Добавить запись"); //??????????? ????
 		puts(" 3 - Удалить запись");
-		puts(" 6 - Назад"); //??????????? ????
+		puts(" 4 - Подсчитать среднее значение цены");
+		puts(" 5 - Отсортировать по количеству книг");
+		puts(" 6 - Отсортировать по имени автора");
+		puts(" 7 - Поиск записей"); //??????????? ????
+		puts(" 8 - Выход"); //??????????? ????
 		unsigned opt;
 		fflush(stdin); //????????? ???????? ??????
 		scanf_s("%u" , &opt);
@@ -20,12 +29,17 @@ eCMD MenuShow()
 			case 1: return CMD_EDIT;
 			case 2: return CMD_ADD;
 			case 3: return CMD_DELETE;
-			case 6: return CMD_EXIT;
+			case 4: return CMD_AVG;
+			case 5: return CMD_SORT;
+			case 6: return CMD_SORTA;
+			case 7: return CMD_FIND;
+			case 8: return CMD_EXIT;
 			default: puts("?? ????? ???????????? ??????? ");
 				system("pause");
 		}
 	}
 }
+
 
 void EditRecord(BookStore *data, unsigned count)
 {
@@ -78,6 +92,7 @@ void EditRecord(BookStore *data, unsigned count)
 
 }
 
+
 void AddRecord(BookStore *data, unsigned *count)
 {
 	std::cout << "Global data address" << data << "\n";
@@ -126,6 +141,7 @@ void AddRecord(BookStore *data, unsigned *count)
 	}
 }
 
+
 void DeleteRecord(BookStore *data, unsigned *count) {
 	std::cout << "Global data address" << data << "\n";
 	std::cout << "Global count address" << count << "\n";
@@ -145,6 +161,7 @@ void DeleteRecord(BookStore *data, unsigned *count) {
 		puts("Неверно введен номер записи для удаления!");
 	}
 }
+
 
 void ShowData(BookStore *data, unsigned &count) 
 {
@@ -183,9 +200,122 @@ void ShowData(BookStore *data, unsigned &count)
 		case CMD_DELETE:
 			DeleteRecord(data, &count);
 			break;
+		case CMD_AVG:
+			AveragePrice(data, count); 
+			break;
+		case CMD_SORT:
+			SortCount(data, count);
+			break;
+		case CMD_SORTA:
+			SortAuthor(data, count);
+			break;
+		case CMD_FIND:
+			Find(data, count);
+			break;
 		}
 	}
 	puts("done");
 	system("pause");
 }
 
+
+void AveragePrice(BookStore* data, unsigned count) {
+	float average=0;
+	for (int i = 0; i <= count; i++) {
+		average += data[i].price;
+	}
+	average /=count;
+	printf("Среднее значение цены:%f",average);
+	system("pause");
+}
+
+
+void SortCount(BookStore* data, unsigned count) {
+	BookStore buffer;
+	bool b = true;
+	while (b) {
+		b = false;
+		for (unsigned i = 0; i <= count - 1; i++) {
+			if (data[i].count > data[i + 1].count) {
+				buffer = data[i + 1];
+				data[i + 1] = data[i];
+				data[i] = buffer;
+				b = true;
+			}
+		}
+	}
+}
+
+
+void SortAuthor(BookStore *data, unsigned count) {
+	BookStore buffer;
+	bool b = true;
+	while (b) {
+		b = false;
+		for (unsigned i = 0; i <= count - 1; i++) {
+			if (strcoll(data[i].author,data[i + 1].author)>0) {
+				buffer = data[i + 1];
+				data[i + 1] = data[i];
+				data[i] = buffer;
+				b = true;
+			}
+		}
+	}
+}
+
+
+void Find(BookStore *data, unsigned count){
+
+	puts("Введите запрос: ");
+	char request[16];
+	scanf("%s", &request);
+	std::string target;
+	std::string req = request;
+	bool A = false;
+	system("cls");
+	puts("Найдены следующие записи:\n");
+	for(int i=0;i<=count;i++){
+		target = data[i].author;
+		if (target.find(req) != std::string::npos) {
+			A = true;
+			printf("|%d|%16s|%16s|%16s|%4f ???.|%3i ??.|\n", 
+					i,
+					data[i].author,
+					data[i].bookName,
+					data[i].code,
+					data[i].price,
+					data[i].count);
+			continue;
+		}
+		target = data[i].bookName;
+		if (target.find(req) != std::string::npos) {
+			A = true;
+			printf("|%d|%16s|%16s|%16s|%4f ???.|%3i ??.|\n",
+				i,
+				data[i].author,
+				data[i].bookName,
+				data[i].code,
+				data[i].price,
+				data[i].count);
+			continue;
+		}
+		target = data[i].code;
+		if (target.find(req) != std::string::npos) {
+			A = true;
+			printf("|%d|%16s|%16s|%16s|%4f ???.|%3i ??.|\n",
+				i,
+				data[i].author,
+				data[i].bookName,
+				data[i].code,
+				data[i].price,
+				data[i].count);
+			continue;
+		}
+
+		}
+	if (!A) {
+		system("cls");
+		puts("Ничего не найдено");
+	}
+	system("pause");
+}
