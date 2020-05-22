@@ -9,9 +9,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 BookStore Data[MAX_SIZE] =
 {
-{ "Донцова","Проходняк","10А",100,10 },
-{ "Донцова2","Проходняк2","11А",101,11 },
-{ "Донцова3","Проходняк3","12А",102,12 },
+{ "asd","sdfsdfsdf","10A",100,10 },
+{ "asd1","sdfsdfg","11A",101,11 },
+{ "asd22","sdfsdfsdff","12A",102,12 },
 };
 char FileName[20] = "SuperDataBin.bin";
 unsigned Count = 3;
@@ -29,7 +29,8 @@ eCMD Menu()
 		puts("1 - Открыть файл ");
 		puts("2 - Просмотр данных");
 		puts("3 - Сохранить файл");
-		puts("4 - Выход из программы");
+		puts("4 - Сохранить файл CSV");
+		puts("5 - Выход из программы");
 		unsigned opt;
 		fflush(stdin); //обнуление входного потока
 		scanf_s("%u" , &opt);
@@ -38,7 +39,8 @@ eCMD Menu()
 		case 1: return CMD_READ; break;
 			case 2: return CMD_SHOW; break;
 			case 3: return CMD_SAVE; break;
-			case 4: return CMD_EXIT; break;
+			case 4: return CMD_SAVECSV; break;
+			case 5: return CMD_EXIT; break;
 			default: puts("Вы ввели неправильную команду");
 				system("pause");
 
@@ -50,7 +52,16 @@ eCMD Menu()
 
 int main(int argc, char* argv[])
 {
-
+	std::cout << argc << "\n";
+	for (int i = 0; i < argc; i++) {
+		std::cout << argv[i] << "\n";
+	}
+	if (argc == 2) {
+		strcpy(FileName,argv[1]);
+	}
+	else if (argc > 2) {
+		puts("Аргументы запуска не верны, запуск по умолчанию");
+	}
 	system("chcp 1251");
 	eCMD cmd = CMD_NONE;
 	while (true) //цикл для обработки команд основного меню
@@ -61,7 +72,13 @@ int main(int argc, char* argv[])
 		{
 			case CMD_SHOW: ShowData(Data, Count); break;
 			case CMD_READ: CRead(Data, Count,FileName); break;
-			case CMD_SAVE: CSave(Data, Count, FileName); break;
+			case CMD_SAVE: 
+				CSave(Data, Count, FileName); 
+				CReadHidden(Data, Count, FileName);
+				break;
+			case CMD_SAVECSV:
+				CSVSave(Data, Count);
+				break;
 		}
 	}
 	puts("Работа закончена");
