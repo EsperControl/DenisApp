@@ -3,10 +3,9 @@
 #include "file3.h"
 #include <iostream> // header in standard library
 #include <stdio.h>
-#include <fstream>
-#include <filesystem>
-#include <string>
+
 #define _CRT_SECURE_NO_WARNINGS
+
 BookStore Data[MAX_SIZE] =
 {
 { "asd","sdfsdfsdf","10A",100,10 },
@@ -22,15 +21,13 @@ eCMD Menu()
 	while (true)
 	{
 		system("cls"); //очистка экрана
-		std::cout << "Global data address" << &Data << "\n";
-		std::cout << "Global count address" << &Count << "\n";
-		std::cout << "Global count value" << Count << "\n";
 		puts("Выберите действие : "); //отображение меню
 		puts("1 - Открыть файл ");
 		puts("2 - Просмотр данных");
 		puts("3 - Сохранить файл");
 		puts("4 - Сохранить файл CSV");
-		puts("5 - Выход из программы");
+		puts("5 - Загрузить из CSV");
+		puts("6 - Выход из программы");
 		unsigned opt;
 		fflush(stdin); //обнуление входного потока
 		scanf_s("%u" , &opt);
@@ -40,7 +37,8 @@ eCMD Menu()
 			case 2: return CMD_SHOW; break;
 			case 3: return CMD_SAVE; break;
 			case 4: return CMD_SAVECSV; break;
-			case 5: return CMD_EXIT; break;
+			case 5: return CMD_READCSV; break;
+			case 6: return CMD_EXIT; break;
 			default: puts("Вы ввели неправильную команду");
 				system("pause");
 
@@ -52,16 +50,6 @@ eCMD Menu()
 
 int main(int argc, char* argv[])
 {
-	std::cout << argc << "\n";
-	for (int i = 0; i < argc; i++) {
-		std::cout << argv[i] << "\n";
-	}
-	if (argc == 2) {
-		strcpy(FileName,argv[1]);
-	}
-	else if (argc > 2) {
-		puts("Аргументы запуска не верны, запуск по умолчанию");
-	}
 	system("chcp 1251");
 	eCMD cmd = CMD_NONE;
 	while (true) //цикл для обработки команд основного меню
@@ -78,6 +66,9 @@ int main(int argc, char* argv[])
 				break;
 			case CMD_SAVECSV:
 				CSVSave(Data, Count);
+				break;
+			case CMD_READCSV:
+				CSVRead(Data, Count);
 				break;
 		}
 	}

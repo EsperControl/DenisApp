@@ -34,7 +34,7 @@ eCMD MenuShow()
 			case 6: return CMD_SORTA;
 			case 7: return CMD_FIND;
 			case 8: return CMD_EXIT;
-			default: puts("?? ????? ???????????? ??????? ");
+			default: puts("Введена неверная команда ");
 				system("pause");
 		}
 	}
@@ -43,12 +43,12 @@ eCMD MenuShow()
 
 void EditRecord(BookStore* data, unsigned count)
 {
-	std::cout << "Global data address" << data << "\n";
+	//Защита от дурака
 	puts("\n???????? ??????,??????? ?????? ????????: ");
 	unsigned opt;
 	while (true) {
 		fflush(stdin);
-		scanf_s("%u", &opt);
+		scanf("%u", &opt);
 		if (opt < count) {
 			break;
 		}
@@ -90,12 +90,8 @@ scanf("%d", &data[opt].count);
 
 void AddRecord(BookStore *data, unsigned *count)
 {
-	std::cout << "Global data address" << data << "\n";
-	std::cout << "Global count address" << count << "\n";
-	std::cout << "Global count value" << *count << "\n";
 	if (*count < MAX_SIZE) {
 		unsigned opt = *count;
-		std::cout << "opt value" << opt << "\n";
 		*count += 1;
 		puts("Введите значение 1");
 		fflush(stdin); //????
@@ -109,25 +105,13 @@ void AddRecord(BookStore *data, unsigned *count)
 		fflush(stdin); //????
 		scanf("%s", &data[opt].code);
 
-		// ???ts("Введите значение 4");
+		puts("Введите значение 4");
 		fflush(stdin); //????
 		scanf("%f", &data[opt].price);
 
 		puts("Введите значение 5");
 		fflush(stdin); //????
 		scanf("%d", &data[opt].count);
-		printf("______________________________________________________________________\n");
-		printf("|%d|%16s|%16s|%16s|%4f ???.|%руб??.|\nшт",
-			opt,
-			data[opt].author,
-			data[opt].bookName,
-			data[opt].code,
-			data[opt].price,
-			data[opt].count);
-		std::cout << "Global data address" << data << "\n";
-		std::cout << "Global count address" << &count << "\n";
-		std::cout << "Global count value" << count << "\n";
-		system("pause");
 	}
 	else {
 		puts("Достигнут максимум записей");
@@ -137,10 +121,8 @@ void AddRecord(BookStore *data, unsigned *count)
 
 
 void DeleteRecord(BookStore *data, unsigned *count) {
-	std::cout << "Global data address" << data << "\n";
-	std::cout << "Global count address" << count << "\n";
-	std::cout << "Global count value" << *count << "\n";
 	printf("Какую запись Вы хотите удалить? ");
+	//Защита от дурака
 	unsigned opt;
 	fflush(stdin); 
 	scanf("%u", &opt);
@@ -164,14 +146,9 @@ void ShowData(BookStore *data, unsigned &count)
 	while (cmd != CMD_EXIT)
 	{
 		system("cls");
-		std::cout << "Global data address" << data << "\n";
-		std::cout << "Global count address" << &count << "\n";
-		std::cout << "Global count value" << count << "\n";
+
 		printf("___________________________________________________________________\n");
-		printf("|id|%16s|%16s|%16s|     руб.|     шт.|\n",
-			"?????",
-			"?????",
-			"???");
+		printf("|id|author|bookname|code|     руб.|     шт.|\n");
 		for (unsigned i = 0; i < count; i++) {
 			printf("______________________________________________________________________\n");
 			printf("|%d|%16s|%16s|%16s|%4f руб.|%3i шт.|\n", 

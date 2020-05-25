@@ -17,6 +17,7 @@ void CSave(BookStore *data, unsigned count, char* filename)
 	fflush(stdin); 
 	scanf("%s", &opt);
 	if (opt == 2) {
+		//—делать защиту от дурака
 		printf("¬ведите им€ файла: ");
 		scanf("%s", filename);
 	}
@@ -25,7 +26,6 @@ void CSave(BookStore *data, unsigned count, char* filename)
 	Cipher(data, count);
 	fwrite(data, sizeof(BookStore), count, inp);
 	fclose(inp);
-	system("pause");
 }
 
 void CReadHidden(BookStore* data, unsigned count, char* filename)
@@ -39,13 +39,12 @@ void CReadHidden(BookStore* data, unsigned count, char* filename)
 	}
 	else {
 		fseek(inp, 0, 0);
-		unsigned new_count;
+		unsigned new_count=0;
 		fread(&new_count, sizeof(unsigned), 1, inp);
 		fread(data, sizeof(BookStore), new_count, inp);
 		DeCipher(data, new_count);
 		fclose(inp);
 		count = new_count;
-		system("pause");
 	}
 }
 
@@ -56,6 +55,7 @@ void CRead(BookStore* data, unsigned& count, char* filename)
 	fflush(stdin);
 	scanf("%s", &opt);
 	if (opt == 2) {
+		//—делать защиту от дурака
 		printf("¬ведите им€ файла: ");
 		scanf("%s", filename);
 	}
@@ -73,7 +73,6 @@ void CRead(BookStore* data, unsigned& count, char* filename)
 		DeCipher(data, new_count);
 		fclose(inp);
 		count = new_count;
-		system("pause");
 	}
 }
 
@@ -113,11 +112,13 @@ void Cezar(char* mystring, int size, int step) {
 	}
 
 void CSVSave(BookStore* data, unsigned count) {
+	//—делать защиту от дурака
 	char filename[20];
 	printf("¬ведите им€ файла: ");
 	fflush(stdin);
 	scanf("%s", &filename);
 	FILE* inp = fopen(filename, "w");
+	fprintf(inp, "%d\n", count);
 	for (unsigned i = 0; i < count; i++) {
 		fprintf(inp,"%s,%s,%s,%f,%d\n",
 			data[i].author,
@@ -126,15 +127,71 @@ void CSVSave(BookStore* data, unsigned count) {
 			data[i].price,
 			data[i].count);
 	}
-	fclose(file);
+	fclose(inp);
 }
 
-void CSVRead(BookStore* data, unsigned count) {
+void CSVRead(BookStore* data, unsigned &count) {
 	char filename[20];
 	printf("¬ведите им€ файла: ");
+	//—делать защиту от дурака
 	fflush(stdin);
 	scanf("%s", &filename);
-	FILE* inp = fopen(filename, "w");
+	FILE* inp = fopen(filename, "r");
+	fscanf(inp, "%d", &count);
+	int temp = count;
+	char buffer[1000];
+	int c1 = 0;
+	int c2 = 1;
+	int point = 0;
+	char subbuff[16] = "";
+
+	for (int i = -1; i <= temp; i++) {
+		std::cout << i<<"\n";
+		fgets(buffer, 1000, inp);
+		puts(buffer);
+		c1 = 0;
+		c2 = 1;
+		point = 0;
+		for (c2 = 1; c2 < 1000; c2++) {
+			if (buffer[c2] == ',' || buffer[c2] == '\n') {
+				memset(subbuff, 0, sizeof(subbuff));
+				memcpy(subbuff, &buffer[c1], c2 - c1);			
+				switch (point) {
+				case 0:
+					memcpy(data[i].author, subbuff, sizeof(subbuff));
+					//*data[i].author = (char)subbuff;
+					printf("%s = %s\n", data[i].author,subbuff);
+					point++;
+					break;
+				case 1:
+					memcpy(data[i].bookName, subbuff, sizeof(subbuff));
+					printf("%s = %s\n", data[i].bookName, subbuff);
+					point++;
+					break;
+				case 2:
+					memcpy(data[i].code, subbuff, sizeof(subbuff));
+					printf("%s = %s\n", data[i].code, subbuff);
+					point++;
+					break;
+				case 3:
+					data[i].price = (float)atof(subbuff);
+					point++;
+					break;
+				case 4:
+					data[i].count = atoi(subbuff);
+					point++;
+					break;
+				}
+				c1 = c2 + 1;
+				
+			}
+			
+		}
+		
+	}
+
+	fclose(inp);
+	system("pause");
 
 }
 
